@@ -42,11 +42,13 @@
 <ol>
   <li>Введіть свій email та підтвердіть його кодом</li>
   <li>Перейдіть на сторінку оплати Monobank (сума та призначення вже заповнені)</li>
-  <li>Після оплати на вказану пошту буде відправлено:</li>
-  <ul>
-    <li>📦 Посилання на архів із Pro-версією</li>
-    <li>🔑 Код активації</li>
-  </ul>
+  <li>
+    Після оплати на <strong>вказану вами пошту</strong> буде надіслано:
+    <ul>
+      <li>📦 посилання для завантаження архіву з AppS‑Text Pro</li>
+      <li>🔑 унікальний код активації</li>
+    </ul>
+  </li>
 </ol>
 
 <hr>
@@ -58,13 +60,13 @@
 <div id="codeBlock" class="hidden">
   <h3>🔐 Введіть код з пошти</h3>
   <input type="text" id="code" placeholder="6-значний код">
-  <button onclick="verifyCode()">Продовжити покупку</button>
+  <button onclick="verifyCode()">Перейти до оплати</button>
 </div>
 
 <p id="status" style="color: green;"></p>
 
 <script>
-  const sheetApiUrl = "https://script.google.com/macros/s/ВАШ_ID/exec"; // заменить
+  const sheetApiUrl = "https://script.google.com/macros/s/ВАШ_ID/exec"; // заменить на ваш ID
 
   async function sendCode() {
     const email = document.getElementById("email").value.trim();
@@ -74,7 +76,7 @@
     const data = await res.json();
 
     if (data.status === "ok") {
-      document.getElementById("status").innerText = "Код надіслано на вашу пошту";
+      document.getElementById("status").innerText = "✅ Код надіслано на вашу пошту";
       document.getElementById("codeBlock").classList.remove("hidden");
     } else {
       alert("Помилка при надсиланні коду");
@@ -89,11 +91,11 @@
     const data = await res.json();
 
     if (data.status === "ok") {
-      // Перехід на Monobank з email у тексті
+      // Сформувати посилання Monobank із поштою
       const monoUrl = `https://send.monobank.ua/9rVLotTqcy?amount=500&text=email=${encodeURIComponent(email)}`;
       window.location.href = monoUrl;
     } else {
-      alert("Невірний код. Перевірте пошту.");
+      alert("Невірний код. Спробуйте ще раз.");
     }
   }
 </script>

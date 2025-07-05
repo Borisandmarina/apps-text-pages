@@ -2,12 +2,101 @@
 <html lang="uk">
 <head>
   <meta charset="UTF-8">
-  <title>AppS-Text Pro</title>
+  <title>AppS-Text Pro — Оплата</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 600px;
+      margin: 40px auto;
+      line-height: 1.6;
+    }
+    input {
+      padding: 8px;
+      width: 100%;
+      margin: 10px 0;
+    }
+    button {
+      padding: 10px 20px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:disabled {
+      background: #aaa;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
 </head>
 <body>
-  <h1>Дякуємо за оплату!</h1>
-  <p>Введіть код активації, щоб отримати доступ до версії Pro:</p>
-  <input type="text" placeholder="Введіть код">
-  <button>Перевірити</button>
+
+<h1>AppS-Text Pro: Придбання розширення</h1>
+
+<p>
+  Ви отримаєте версію <strong>AppS-Text Pro</strong> одразу після оплати.
+</p>
+
+<h3>🔄 Як проходить покупка:</h3>
+<ol>
+  <li>Введіть свій email та підтвердіть його кодом</li>
+  <li>Перейдіть на сторінку оплати Monobank (сума та призначення вже заповнені)</li>
+  <li>Після оплати вам автоматично буде відправлено:</li>
+  <ul>
+    <li>📦 Посилання на архів із Pro-версією</li>
+    <li>🔑 Код активації</li>
+  </ul>
+</ol>
+
+<hr>
+
+<h3>📧 Введіть вашу електронну адресу</h3>
+<input type="email" id="email" placeholder="example@gmail.com">
+<button onclick="sendCode()">Отримати код підтвердження</button>
+
+<div id="codeBlock" class="hidden">
+  <h3>🔐 Введіть код з пошти</h3>
+  <input type="text" id="code" placeholder="6-значний код">
+  <button onclick="verifyCode()">Продовжити покупку</button>
+</div>
+
+<p id="status" style="color: green;"></p>
+
+<script>
+  const sheetApiUrl = "https://script.google.com/macros/s/ВАШ_ID/exec"; // заменить
+
+  async function sendCode() {
+    const email = document.getElementById("email").value.trim();
+    if (!email || !email.includes('@')) return alert("Введіть коректний email");
+
+    const res = await fetch(`${sheetApiUrl}?action=send_code&email=${encodeURIComponent(email)}`);
+    const data = await res.json();
+
+    if (data.status === "ok") {
+      document.getElementById("status").innerText = "Код надіслано на вашу пошту";
+      document.getElementById("codeBlock").classList.remove("hidden");
+    } else {
+      alert("Помилка при надсиланні коду");
+    }
+  }
+
+  async function verifyCode() {
+    const email = document.getElementById("email").value.trim();
+    const code = document.getElementById("code").value.trim();
+
+    const res = await fetch(`${sheetApiUrl}?action=verify_code&email=${encodeURIComponent(email)}&code=${code}`);
+    const data = await res.json();
+
+    if (data.status === "ok") {
+      // Перехід на Monobank з email у тексті
+      const monoUrl = `https://send.monobank.ua/9rVLotTqcy?amount=500&text=email=${encodeURIComponent(email)}`;
+      window.location.href = monoUrl;
+    } else {
+      alert("Невірний код. Перевірте пошту.");
+    }
+  }
+</script>
+
 </body>
 </html>

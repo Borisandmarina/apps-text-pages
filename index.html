@@ -104,7 +104,7 @@
       console.log("🔐 Перевірка коду:", data);
 
       if (data.status === "ok") {
-        const monoUrl = `https://send.monobank.ua/9rVLotTqcy?amount=500&text=email=${encodeURIComponent(email)}`;
+        const monoUrl = `https://send.monobank.ua/9rVLotTqcy?amount=250&text=email=${encodeURIComponent(email)}`;
         window.location.href = monoUrl;
       } else {
         alert("Невірний код. Спробуйте ще раз.");

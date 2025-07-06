@@ -66,19 +66,30 @@
 <button onclick="verifyCode()">Перейти до оплати</button>
 
 <script>
+  // 🔗 Вставь сюда свой рабочий Google Apps Script Web App URL
   const sheetApiUrl = "https://script.google.com/macros/s/AKfycbz5HqKfQfSwTziCc6hLBKY6PMrOQx3E0PdeAo82Q8pT7wSWcUaZ_wB4m0EW9dUu2_V9/exec";
 
   async function sendCode() {
     const email = document.getElementById("email").value.trim();
-    if (!email || !email.includes('@')) return alert("Введіть коректний email");
+    if (!email || !email.includes('@')) {
+      alert("Введіть коректний email");
+      return;
+    }
 
-    const res = await fetch(`${sheetApiUrl}?action=send_code&email=${encodeURIComponent(email)}`);
-    const data = await res.json();
+    try {
+      const res = await fetch(`${sheetApiUrl}?action=send_code&email=${encodeURIComponent(email)}`);
+      const data = await res.json();
 
-    if (data.status === "ok") {
-      document.getElementById("status").innerText = "✅ Код надіслано на вашу пошту";
-    } else {
-      alert("Помилка при надсиланні коду");
+      console.log("🔁 Відповідь від сервера:", data);
+
+      if (data.status === "ok") {
+        document.getElementById("status").innerText = "✅ Код надіслано на вашу пошту";
+      } else {
+        alert("❌ Помилка при надсиланні коду: " + (data.message || "невідома"));
+      }
+    } catch (error) {
+      console.error("❌ Помилка fetch:", error);
+      alert("❌ Помилка при надсиланні коду (мережа або скрипт): " + error.message);
     }
   }
 
@@ -86,14 +97,21 @@
     const email = document.getElementById("email").value.trim();
     const code = document.getElementById("code").value.trim();
 
-    const res = await fetch(`${sheetApiUrl}?action=verify_code&email=${encodeURIComponent(email)}&code=${code}`);
-    const data = await res.json();
+    try {
+      const res = await fetch(`${sheetApiUrl}?action=verify_code&email=${encodeURIComponent(email)}&code=${code}`);
+      const data = await res.json();
 
-    if (data.status === "ok") {
-      const monoUrl = `https://send.monobank.ua/9rVLotTqcy?amount=500&text=email=${encodeURIComponent(email)}`;
-      window.location.href = monoUrl;
-    } else {
-      alert("Невірний код. Спробуйте ще раз.");
+      console.log("🔐 Перевірка коду:", data);
+
+      if (data.status === "ok") {
+        const monoUrl = `https://send.monobank.ua/9rVLotTqcy?amount=500&text=email=${encodeURIComponent(email)}`;
+        window.location.href = monoUrl;
+      } else {
+        alert("Невірний код. Спробуйте ще раз.");
+      }
+    } catch (error) {
+      console.error("❌ Помилка перевірки коду:", error);
+      alert("❌ Неможливо перевірити код: " + error.message);
     }
   }
 </script>

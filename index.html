@@ -23,18 +23,22 @@
     border: none;
     cursor: pointer;
     font-size: 16px;
-    transition: background 0.2s, transform 0.1s;
+    transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+    border-radius: 6px;
   }
   button:hover {
-    background: #45a049; /* немного темнее при наведении */
+    background: #43d05a; /* ярче зелёный при наведении */
+    box-shadow: 0 0 8px rgba(76, 175, 80, 0.6); /* зелёное свечение */
   }
   button:active {
-    background: #3e8e41;
-    transform: scale(0.97);
+    background: #2e7d32; /* насыщенный тёмно-зелёный при нажатии */
+    transform: scale(0.95);
+    box-shadow: 0 0 6px rgba(46, 125, 50, 0.8);
   }
   button:disabled {
     background: #aaa;
     cursor: default;
+    box-shadow: none;
   }
   #status {
     color: green;
